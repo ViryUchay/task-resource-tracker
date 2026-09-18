@@ -1,9 +1,13 @@
-# Features
+# Overview
+Task & Resource Tracker is a lightweight, responsive web application designed to help users organize, monitor, and manage their daily tasks alongside key learning resources in a single, centralized dashboard. The application provides real-time summary statistics, dynamic category filtering, search capabilities, and resource link management.
 
-# Overview Dashboard: 
+As a software engineer, building this application was an opportunity to deepen my mastery of DOM manipulation, client-side data handling, component structuring, and UI state management. Modern web development requires intuitive user interfaces backed by efficient dynamic rendering, and this project served as a practical foundation for mastering those core concepts.
+
+
+# Dashboard
 Visual summary counters displaying Total Tasks, Completed Tasks, Pending Tasks, and Total Resources.
 
-# Task Management:
+# Task Management
 
 Add new tasks with customized categories (Programming, Study, Project, Personal).
 
@@ -11,7 +15,7 @@ Mark tasks as complete or delete them when no longer needed.
 
 Search and filter tasks by specific categories.
 
-# Resource Tracking:
+# Resource Tracking
 
 Save valuable links and reference materials with custom titles and URLs.
 
@@ -21,27 +25,12 @@ Search and filter saved resources by category.
 
 Direct links to visit external resources.
 
-# Tech Stack
-HTML5: Semantic layout and structure.
+# Development Environment
+Development Tools: Visual Studio Code, Live Server extension, Chrome Developer Tools (for debugging and inspecting the DOM).
 
-CSS3: Responsive styling and component layouts.
+Languages & Technologies: HTML5 (semantic structure), CSS3 (styling and layout), JavaScript (dynamic functionality, state management, and DOM manipulation).
 
-JavaScript: Dynamic rendering, task updates, filtering, and local state management.
+# Useful Websites
+MDN Web Docs - [JavaScript Guide](https://developer.mozilla.org
 
-# Getting Started
-Clone or Download: Clone the repository or download the source files locally.
-
-Open in Browser: Launch index.html directly in any web browser (or serve using a local server extension such as Live Server).
-
-# Usage
-Adding a Task: Navigate to the My Tasks section, enter the task name, select a category, and click Add Task.
-
-Managing Tasks: Use Mark Complete to update status or Delete to remove a task.
-
-Adding a Resource: Navigate to My Resources, input the resource name, URL, select a category, and click Add Resource.
-
-Filtering: Use the search bar or category dropdowns to filter specific tasks or resources.
-
-Author: Vivian Eze
-
-Copyright: © 2026 Task & Resource Tracker
+MDN Web Docs - HTML & CSS
