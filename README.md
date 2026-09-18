@@ -33,4 +33,5 @@ Languages & Technologies: HTML5 (semantic structure), CSS3 (styling and layout),
 # Useful Websites
 MDN Web Docs - [JavaScript Guide](https://developer.mozilla.org
 
-MDN Web Docs - HTML & CSS
+MDN Web Docs - [HTML & CSS]https://developer.mozilla.org/en-US/docs/Learn
+
