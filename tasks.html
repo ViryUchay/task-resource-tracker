@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Manage and filter tasks.">
+    <meta name="author" content="Vivian Eze">
+    <title>Tasks - Task & Resource Tracker</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="container">
+            <h1>Task & Resource Tracker</h1>
+            <nav>
+                <a href="index.html">Dashboard</a>
+                <a href="tasks.html" class="active">Tasks</a>
+                <a href="resources.html">Resources</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="tracker-section" aria-labelledby="tasks-heading">
+            <h2 id="tasks-heading">Manage Tasks</h2>
+
+            <form id="task-form">
+                <div class="form-group">
+                    <label for="task-name">Task Name</label>
+                    <input type="text" id="task-name" name="task-name" placeholder="Enter a task" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="task-category">Category</label>
+                    <select id="task-category" name="task-category" required>
+                        <option value="">Select a category</option>
+                        <option value="Programming">Programming</option>
+                        <option value="Study">Study</option>
+                        <option value="Project">Project</option>
+                        <option value="Personal">Personal</option>
+                    </select>
+                </div>
+
+                <button type="submit">Add Task</button>
+            </form>
+
+            <div class="filter-section">
+                <div class="filter-control">
+                    <label for="task-search">Search Tasks</label>
+                    <input type="search" id="task-search" placeholder="Search tasks...">
+                </div>
+
+                <div class="filter-control">
+                    <label for="category-filter">Filter by Category</label>
+                    <select id="category-filter">
+                        <option value="All">All Categories</option>
+                        <option value="Programming">Programming</option>
+                        <option value="Study">Study</option>
+                        <option value="Project">Project</option>
+                        <option value="Personal">Personal</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="task-list" class="card-grid">
+                <!-- Tasks dynamic rendering -->
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Task & Resource Tracker | Vivian Eze</p>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>

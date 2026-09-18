@@ -52,29 +52,84 @@ a {
 
 
 /* ========================================
-   HEADER
+   HEADER & NAVIGATION
    ======================================== */
 
 header {
     background: linear-gradient(135deg, #174a73, #23679a);
     color: white;
-    padding: 3rem 0;
+    padding: 2.5rem 0 2rem;
+    box-shadow: 0 4px 14px rgba(23, 74, 115, 0.2);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+header .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.header-content {
     text-align: center;
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
 }
 
 header h1 {
-    font-size: clamp(2rem, 5vw, 3rem);
+    font-size: clamp(1.8rem, 4vw, 2.75rem);
     font-weight: 700;
     letter-spacing: -0.5px;
-    margin-bottom: 0.6rem;
+    margin-bottom: 0.4rem;
 }
 
 header p {
     max-width: 650px;
     margin: 0 auto;
     font-size: 1.05rem;
-    opacity: 0.95;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Glassmorphism Navigation Bar */
+header nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 0.35rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Nav Link Buttons */
+header nav a {
+    color: rgba(255, 255, 255, 0.88);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.925rem;
+    padding: 0.5rem 1.25rem;
+    border-radius: 9999px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Hover State */
+header nav a:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.18);
+}
+
+/* Active Page Pill Highlight */
+header nav a.active {
+    color: #174a73;
+    background: #ffffff;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 
@@ -248,7 +303,7 @@ a:focus-visible {
     padding: 1rem;
     background: #f7f9fc;
     border: 1px solid #e2e8ef;
-    border-radius: 9px;
+    border-radius: 99px;
 }
 
 .filter-control {
@@ -439,15 +494,17 @@ footer p {
     }
 
     header {
-        padding: 2.2rem 0;
+        padding: 1.8rem 0 1.5rem;
     }
 
-    header h1 {
-        font-size: 2rem;
+    header nav {
+        width: 100%;
+        justify-content: center;
     }
 
-    header p {
-        font-size: 0.95rem;
+    header nav a {
+        padding: 0.45rem 0.9rem;
+        font-size: 0.85rem;
     }
 
     main {
@@ -513,7 +570,7 @@ footer p {
     }
 
     header h1 {
-        font-size: 1.7rem;
+        font-size: 1.6rem;
     }
 }
 

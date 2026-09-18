@@ -1,455 +1,332 @@
-// ========================================
-// TASK & RESOURCE TRACKER
-// ========================================
+// ============================================================================
+// TASK & RESOURCE TRACKER - MULTI-PAGE APPLICATION ENGINE
+// Author: Vivian Eze
+// ============================================================================
 
-
-// ========================================
-// TASK ELEMENTS
-// ========================================
-
-const taskForm = document.querySelector("#task-form");
-const taskName = document.querySelector("#task-name");
-const taskCategory = document.querySelector("#task-category");
-const taskList = document.querySelector("#task-list");
-const categoryFilter = document.querySelector("#category-filter");
-const taskSearch = document.querySelector("#task-search");
-
-
-// ========================================
-// RESOURCE ELEMENTS
-// ========================================
-
-const resourceForm = document.querySelector("#resource-form");
-const resourceName = document.querySelector("#resource-name");
-const resourceUrl = document.querySelector("#resource-url");
-const resourceCategory = document.querySelector("#resource-category");
-const resourceList = document.querySelector("#resource-list");
-const resourceFilter = document.querySelector("#resource-filter");
-const resourceSearch = document.querySelector("#resource-search");
-
-
-// ========================================
-// DASHBOARD ELEMENTS
-// ========================================
-
-const totalTasks = document.querySelector("#total-tasks");
-const completedTasks = document.querySelector("#completed-tasks");
-const pendingTasks = document.querySelector("#pending-tasks");
-const totalResources = document.querySelector("#total-resources");
-
-
-// ========================================
-// APPLICATION DATA
-// ========================================
-
+/**
+ * Global Application State loaded from Browser LocalStorage.
+ */
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-
 let resources = JSON.parse(localStorage.getItem("resources")) || [];
 
+/**
+ * Escapes dynamic string inputs to prevent Cross-Site Scripting (XSS) vulnerabilities.
+ * @param {string} str - Raw user input text.
+ * @returns {string} Sanitized HTML-safe string.
+ */
+function escapeHTML(str) {
+    if (!str) return "";
+    return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
 
-// ========================================
-// SAVE TASKS
-// ========================================
+/**
+ * Validates and formats URLs to ensure a proper HTTP/HTTPS scheme.
+ * @param {string} url - Unformatted user-entered URL.
+ * @returns {string} Fully qualified web URL.
+ */
+function sanitizeURL(url) {
+    const trimmed = url.trim();
+    if (!/^https?:\/\//i.test(trimmed)) {
+        return `https://${trimmed}`;
+    }
+    return trimmed;
+}
 
+/**
+ * Persists current task array state to localStorage.
+ */
 function saveTasks() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
-
-// ========================================
-// SAVE RESOURCES
-// ========================================
-
+/**
+ * Persists current resource array state to localStorage.
+ */
 function saveResources() {
     localStorage.setItem("resources", JSON.stringify(resources));
 }
 
-
-// ========================================
-// UPDATE DASHBOARD
-// ========================================
-
+/**
+ * Recalculates metrics and updates the Overview Dashboard elements if present on page.
+ */
 function updateDashboard() {
+    const totalTasksEl = document.querySelector("#total-tasks");
+    const completedTasksEl = document.querySelector("#completed-tasks");
+    const pendingTasksEl = document.querySelector("#pending-tasks");
+    const totalResourcesEl = document.querySelector("#total-resources");
+    const summaryContainer = document.querySelector("#summary-content");
 
-    // Count all tasks
-    const total = tasks.length;
-
-    // Count completed tasks
-    const completed = tasks.filter(task => task.completed === true).length;
-
-    // Calculate pending tasks
-    const pending = total - completed;
-
-    // Display the numbers
-    totalTasks.textContent = total;
-    completedTasks.textContent = completed;
-    pendingTasks.textContent = pending;
-    totalResources.textContent = resources.length;
-}
-
-
-// ========================================
-// DISPLAY TASKS
-// ========================================
-
-function displayTasks() {
-
-    taskList.innerHTML = "";
-
-    const selectedCategory = categoryFilter.value;
-
-    const searchText = taskSearch.value.toLowerCase().trim();
-
-
-    // Filter tasks
-    const filteredTasks = tasks.filter(task => {
-
-        const matchesCategory =
-            selectedCategory === "All" ||
-            task.category === selectedCategory;
-
-        const matchesSearch =
-            task.name.toLowerCase().includes(searchText);
-
-        return matchesCategory && matchesSearch;
-    });
-
-
-    // No tasks found
-    if (filteredTasks.length === 0) {
-
-        taskList.innerHTML =
-            '<p class="empty-message">No tasks found.</p>';
-
+    if (!totalTasksEl || !completedTasksEl || !pendingTasksEl || !totalResourcesEl) {
         return;
     }
 
+    const total = tasks.length;
+    const completed = tasks.filter(task => task.completed === true).length;
+    const pending = total - completed;
 
-    // Display each task
+    totalTasksEl.textContent = total;
+    completedTasksEl.textContent = completed;
+    pendingTasksEl.textContent = pending;
+    totalResourcesEl.textContent = resources.length;
+
+    if (summaryContainer) {
+        renderDashboardSummary(summaryContainer);
+    }
+}
+
+/**
+ * Renders a combined recent summary list on the Index/Dashboard page.
+ * @param {HTMLElement} container - The DOM container element to display summary cards.
+ */
+function renderDashboardSummary(container) {
+    container.innerHTML = "";
+
+    const recentTasks = tasks.slice(-3).reverse();
+    const recentResources = resources.slice(-3).reverse();
+
+    if (recentTasks.length === 0 && recentResources.length === 0) {
+        container.innerHTML = '<p class="empty-message">No activity recorded yet. Add tasks or resources to view summaries.</p>';
+        return;
+    }
+
+    recentTasks.forEach(task => {
+        const card = document.createElement("article");
+        card.classList.add("card");
+        card.innerHTML = `
+            <h3>Task: ${escapeHTML(task.name)}</h3>
+            <p>Category: ${escapeHTML(task.category)}</p>
+            <p>Status: <strong>${task.completed ? "Completed" : "Pending"}</strong></p>
+        `;
+        container.appendChild(card);
+    });
+
+    recentResources.forEach(res => {
+        const card = document.createElement("article");
+        card.classList.add("card");
+        card.innerHTML = `
+            <h3>Resource: ${escapeHTML(res.name)}</h3>
+            <p>Category: ${escapeHTML(res.category)}</p>
+            <a href="${escapeHTML(sanitizeURL(res.url))}" target="_blank" rel="noopener noreferrer" class="resource-link">Visit Link</a>
+        `;
+        container.appendChild(card);
+    });
+}
+
+/**
+ * Filters and renders tasks into the DOM on the tasks.html page.
+ */
+function displayTasks() {
+    const taskList = document.querySelector("#task-list");
+    const categoryFilter = document.querySelector("#category-filter");
+    const taskSearch = document.querySelector("#task-search");
+
+    if (!taskList || !categoryFilter || !taskSearch) return;
+
+    taskList.innerHTML = "";
+    const selectedCategory = categoryFilter.value;
+    const searchText = taskSearch.value.toLowerCase().trim();
+
+    const filteredTasks = tasks.filter(task => {
+        const matchesCategory = selectedCategory === "All" || task.category === selectedCategory;
+        const matchesSearch = task.name.toLowerCase().includes(searchText);
+        return matchesCategory && matchesSearch;
+    });
+
+    if (filteredTasks.length === 0) {
+        taskList.innerHTML = '<p class="empty-message">No matching tasks found.</p>';
+        return;
+    }
+
     filteredTasks.forEach(task => {
-
         const taskCard = document.createElement("article");
-
         taskCard.classList.add("card");
-
-
-        // Add completed class
-        if (task.completed) {
-            taskCard.classList.add("completed");
-        }
-
+        if (task.completed) taskCard.classList.add("completed");
 
         taskCard.innerHTML = `
-            <h3>${task.name}</h3>
-
-            <p>Category: ${task.category}</p>
-
-            <p>
-                Status:
-                ${task.completed ? "Completed" : "Not completed"}
-            </p>
-
+            <h3>${escapeHTML(task.name)}</h3>
+            <p>Category: ${escapeHTML(task.category)}</p>
+            <p>Status: ${task.completed ? "Completed" : "Not completed"}</p>
             <div class="card-actions">
-
-                <button
-                    class="complete-button"
-                    data-id="${task.id}"
-                >
-                    ${task.completed
-                ? "Mark Incomplete"
-                : "Mark Complete"}
+                <button class="complete-button" data-id="${task.id}">
+                    ${task.completed ? "Mark Incomplete" : "Mark Complete"}
                 </button>
-
-                <button
-                    class="delete-button"
-                    data-id="${task.id}"
-                >
-                    Delete
-                </button>
-
+                <button class="delete-button" data-id="${task.id}">Delete</button>
             </div>
         `;
-
         taskList.appendChild(taskCard);
     });
 }
 
-
-// ========================================
-// ADD TASK
-// ========================================
-
-taskForm.addEventListener("submit", event => {
-
+/**
+ * Handles the creation and storage of a new task item.
+ * @param {Event} event - HTML Form submission event object.
+ */
+function handleAddTask(event) {
     event.preventDefault();
-
+    const taskName = document.querySelector("#task-name");
+    const taskCategory = document.querySelector("#task-category");
 
     const newTask = {
-
         id: Date.now(),
-
         name: taskName.value.trim(),
-
         category: taskCategory.value,
-
         completed: false
     };
 
-
     tasks.push(newTask);
-
-
-    // Save task
     saveTasks();
-
-
-    // Update screen
     displayTasks();
-
     updateDashboard();
 
+    event.target.reset();
+}
 
-    // Clear form
-    taskForm.reset();
-});
-
-
-// ========================================
-// TASK BUTTONS
-// ========================================
-
-taskList.addEventListener("click", event => {
-
+/**
+ * Handles event delegation for task status toggles and deletions.
+ * @param {Event} event - DOM click event object.
+ */
+function handleTaskActions(event) {
     const taskId = Number(event.target.dataset.id);
-
-
-    if (!taskId) {
-        return;
-    }
-
-
-    // ------------------------------------
-    // DELETE TASK
-    // ------------------------------------
+    if (!taskId) return;
 
     if (event.target.classList.contains("delete-button")) {
-
         tasks = tasks.filter(task => task.id !== taskId);
-
         saveTasks();
-
         displayTasks();
-
         updateDashboard();
     }
-
-
-    // ------------------------------------
-    // COMPLETE / INCOMPLETE TASK
-    // ------------------------------------
 
     if (event.target.classList.contains("complete-button")) {
-
-        const task = tasks.find(task => task.id === taskId);
-
-
+        const task = tasks.find(t => t.id === taskId);
         if (task) {
-
             task.completed = !task.completed;
-
         }
-
-
         saveTasks();
-
         displayTasks();
-
         updateDashboard();
     }
-});
+}
 
-
-// ========================================
-// TASK SEARCH
-// ========================================
-
-taskSearch.addEventListener("input", displayTasks);
-
-
-// ========================================
-// TASK CATEGORY FILTER
-// ========================================
-
-categoryFilter.addEventListener("change", displayTasks);
-
-
-// ========================================
-// DISPLAY RESOURCES
-// ========================================
-
+/**
+ * Filters and renders learning resources into the DOM on the resources.html page.
+ */
 function displayResources() {
+    const resourceList = document.querySelector("#resource-list");
+    const resourceFilter = document.querySelector("#resource-filter");
+    const resourceSearch = document.querySelector("#resource-search");
+
+    if (!resourceList || !resourceFilter || !resourceSearch) return;
 
     resourceList.innerHTML = "";
-
     const selectedCategory = resourceFilter.value;
-
     const searchText = resourceSearch.value.toLowerCase().trim();
 
-
-    // Filter resources
     const filteredResources = resources.filter(resource => {
-
-        const matchesCategory =
-            selectedCategory === "All" ||
-            resource.category === selectedCategory;
-
-        const matchesSearch =
-            resource.name.toLowerCase().includes(searchText);
-
+        const matchesCategory = selectedCategory === "All" || resource.category === selectedCategory;
+        const matchesSearch = resource.name.toLowerCase().includes(searchText);
         return matchesCategory && matchesSearch;
     });
 
-
-    // No resources found
     if (filteredResources.length === 0) {
-
-        resourceList.innerHTML =
-            '<p class="empty-message">No resources found.</p>';
-
+        resourceList.innerHTML = '<p class="empty-message">No matching resources found.</p>';
         return;
     }
 
-
-    // Display resources
     filteredResources.forEach(resource => {
-
         const resourceCard = document.createElement("article");
-
         resourceCard.classList.add("card");
 
-
         resourceCard.innerHTML = `
-
-            <h3>${resource.name}</h3>
-
-            <p>Category: ${resource.category}</p>
-
-            <a
-                class="resource-link"
-                href="${resource.url}"
-                target="_blank"
-                rel="noopener noreferrer"
-            >
+            <h3>${escapeHTML(resource.name)}</h3>
+            <p>Category: ${escapeHTML(resource.category)}</p>
+            <a class="resource-link" href="${escapeHTML(sanitizeURL(resource.url))}" target="_blank" rel="noopener noreferrer">
                 Visit Resource
             </a>
-
             <div class="card-actions">
-
-                <button
-                    class="delete-button"
-                    data-id="${resource.id}"
-                >
-                    Delete
-                </button>
-
+                <button class="delete-button" data-id="${resource.id}">Delete</button>
             </div>
         `;
-
-
         resourceList.appendChild(resourceCard);
     });
 }
 
-
-// ========================================
-// ADD RESOURCE
-// ========================================
-
-resourceForm.addEventListener("submit", event => {
-
+/**
+ * Handles the creation and storage of a new resource item.
+ * @param {Event} event - HTML Form submission event object.
+ */
+function handleAddResource(event) {
     event.preventDefault();
-
+    const resourceName = document.querySelector("#resource-name");
+    const resourceUrl = document.querySelector("#resource-url");
+    const resourceCategory = document.querySelector("#resource-category");
 
     const newResource = {
-
         id: Date.now(),
-
         name: resourceName.value.trim(),
-
         url: resourceUrl.value.trim(),
-
         category: resourceCategory.value
     };
 
-
     resources.push(newResource);
-
-
-    // Save resource
     saveResources();
-
-
-    // Update screen
     displayResources();
-
     updateDashboard();
 
+    event.target.reset();
+}
 
-    // Clear form
-    resourceForm.reset();
-});
-
-
-// ========================================
-// DELETE RESOURCE
-// ========================================
-
-resourceList.addEventListener("click", event => {
-
+/**
+ * Handles event delegation for resource deletions.
+ * @param {Event} event - DOM click event object.
+ */
+function handleResourceActions(event) {
     const resourceId = Number(event.target.dataset.id);
-
-
-    if (!resourceId) {
-        return;
-    }
-
+    if (!resourceId) return;
 
     if (event.target.classList.contains("delete-button")) {
-
-        resources = resources.filter(
-            resource => resource.id !== resourceId
-        );
-
-
+        resources = resources.filter(resource => resource.id !== resourceId);
         saveResources();
-
         displayResources();
-
         updateDashboard();
     }
-});
+}
 
+/**
+ * Initializes application event listeners and page content upon DOM loading completion.
+ */
+function initApp() {
+    // Task Page Binding
+    const taskForm = document.querySelector("#task-form");
+    const taskList = document.querySelector("#task-list");
+    const taskSearch = document.querySelector("#task-search");
+    const categoryFilter = document.querySelector("#category-filter");
 
-// ========================================
-// RESOURCE SEARCH
-// ========================================
+    if (taskForm) taskForm.addEventListener("submit", handleAddTask);
+    if (taskList) taskList.addEventListener("click", handleTaskActions);
+    if (taskSearch) taskSearch.addEventListener("input", displayTasks);
+    if (categoryFilter) categoryFilter.addEventListener("change", displayTasks);
 
-resourceSearch.addEventListener("input", displayResources);
+    // Resource Page Binding
+    const resourceForm = document.querySelector("#resource-form");
+    const resourceList = document.querySelector("#resource-list");
+    const resourceSearch = document.querySelector("#resource-search");
+    const resourceFilter = document.querySelector("#resource-filter");
 
+    if (resourceForm) resourceForm.addEventListener("submit", handleAddResource);
+    if (resourceList) resourceList.addEventListener("click", handleResourceActions);
+    if (resourceSearch) resourceSearch.addEventListener("input", displayResources);
+    if (resourceFilter) resourceFilter.addEventListener("change", displayResources);
 
-// ========================================
-// RESOURCE CATEGORY FILTER
-// ========================================
+    // Initial state rendering
+    updateDashboard();
+    displayTasks();
+    displayResources();
+}
 
-resourceFilter.addEventListener("change", displayResources);
-
-
-// ========================================
-// INITIAL DISPLAY
-// ========================================
-
-displayTasks();
-
-displayResources();
-
-updateDashboard();
+// Attach application entry point listener
+document.addEventListener("DOMContentLoaded", initApp);

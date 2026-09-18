@@ -4,10 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Task and Resource Tracker for organizing tasks and learning resources.">
+    <meta name="description" content="Dashboard overview for Task & Resource Tracker.">
     <meta name="author" content="Vivian Eze">
-    <title>Task & Resource Tracker</title>
-
+    <title>Dashboard - Task & Resource Tracker</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 
@@ -16,157 +15,43 @@
     <header>
         <div class="container">
             <h1>Task & Resource Tracker</h1>
-            <p>Organize your tasks and learning resources in one place.</p>
+            <nav>
+                <a href="index.html" class="active">Dashboard</a>
+                <a href="tasks.html">Tasks</a>
+                <a href="resources.html">Resources</a>
+            </nav>
         </div>
     </header>
 
     <main class="container">
-        <!-- Dashboard -->
-<section class="dashboard" aria-labelledby="dashboard-heading">
-
-    <h2 id="dashboard-heading">My Dashboard</h2>
-
-    <div class="stats-grid">
-
-        <article class="stat-card">
-            <h3>Total Tasks</h3>
-            <p id="total-tasks">0</p>
-        </article>
-
-        <article class="stat-card">
-            <h3>Completed</h3>
-            <p id="completed-tasks">0</p>
-        </article>
-
-        <article class="stat-card">
-            <h3>Pending</h3>
-            <p id="pending-tasks">0</p>
-        </article>
-
-        <article class="stat-card">
-            <h3>Resources</h3>
-            <p id="total-resources">0</p>
-        </article>
-
-    </div>
-
-</section>
-
-        <!-- Task Section -->
-        <section class="tracker-section" aria-labelledby="tasks-heading">
-
-            <h2 id="tasks-heading">My Tasks</h2>
-
-            <form id="task-form">
-
-                <div class="form-group">
-                    <label for="task-name">Task Name</label>
-                    <input type="text" id="task-name" name="task-name" placeholder="Enter a task" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="task-category">Category</label>
-                    <select id="task-category" name="task-category" required>
-                        <option value="">Select a category</option>
-                        <option value="Programming">Programming</option>
-                        <option value="Study">Study</option>
-                        <option value="Project">Project</option>
-                        <option value="Personal">Personal</option>
-                    </select>
-                </div>
-
-                <button type="submit">Add Task</button>
-
-            </form>
-
-            <div class="filter-section">
-
-                <div class="filter-control">
-                    <label for="task-search">Search Tasks</label>
-                    <input type="search" id="task-search" placeholder="Search tasks...">
-                </div>
-
-                <div class="filter-control">
-                    <label for="category-filter">Filter by Category</label>
-
-                    <select id="category-filter">
-                        <option value="All">All Categories</option>
-                        <option value="Programming">Programming</option>
-                        <option value="Study">Study</option>
-                        <option value="Project">Project</option>
-                        <option value="Personal">Personal</option>
-                    </select>
-                </div>
-
+        <section class="dashboard" aria-labelledby="dashboard-heading">
+            <h2 id="dashboard-heading">Overview Dashboard</h2>
+            <div class="stats-grid">
+                <article class="stat-card">
+                    <h3>Total Tasks</h3>
+                    <p id="total-tasks">0</p>
+                </article>
+                <article class="stat-card">
+                    <h3>Completed</h3>
+                    <p id="completed-tasks">0</p>
+                </article>
+                <article class="stat-card">
+                    <h3>Pending</h3>
+                    <p id="pending-tasks">0</p>
+                </article>
+                <article class="stat-card">
+                    <h3>Resources</h3>
+                    <p id="total-resources">0</p>
+                </article>
             </div>
-
-            <div id="task-list" class="card-grid">
-                <!-- Tasks are added here by JavaScript -->
-            </div>
-
         </section>
 
-
-        <!-- Resource Section -->
-        <section class="tracker-section" aria-labelledby="resources-heading">
-
-            <h2 id="resources-heading">My Resources</h2>
-
-            <form id="resource-form">
-
-                <div class="form-group">
-                    <label for="resource-name">Resource Name</label>
-                    <input type="text" id="resource-name" name="resource-name"
-                        placeholder="Example: JavaScript Tutorial" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="resource-url">Resource URL</label>
-                    <input type="url" id="resource-url" name="resource-url" placeholder="https://example.com" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="resource-category">Category</label>
-                    <select id="resource-category" name="resource-category" required>
-                        <option value="">Select a category</option>
-                        <option value="Programming">Programming</option>
-                        <option value="Study">Study</option>
-                        <option value="Project">Project</option>
-                        <option value="Personal">Personal</option>
-                    </select>
-                </div>
-
-                <button type="submit">Add Resource</button>
-
-            </form>
-
-            <div class="filter-section">
-
-                <div class="filter-control">
-                    <label for="resource-search">Search Resources</label>
-                    <input type="search" id="resource-search" placeholder="Search resources...">
-                </div>
-
-                <div class="filter-control">
-                    <label for="resource-filter">Filter by Category</label>
-
-                    <select id="resource-filter">
-                        <option value="All">All Categories</option>
-                        <option value="Programming">Programming</option>
-                        <option value="Study">Study</option>
-                        <option value="Project">Project</option>
-                        <option value="Personal">Personal</option>
-                    </select>
-                </div>
-
+        <section class="recent-summary">
+            <h2>Recent Activities Summary</h2>
+            <div id="summary-content" class="card-grid">
+                <!-- Dynamically populated via JavaScript -->
             </div>
-
-            <div id="resource-list" class="card-grid">
-                <!-- Resources are added here by JavaScript -->
-            </div>
-
         </section>
-
     </main>
 
     <footer>
